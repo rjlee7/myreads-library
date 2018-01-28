@@ -54,7 +54,7 @@ class BooksApp extends Component {
             const updatedBooks = {...this.state.books}
 
             //remove from original shelf
-            if(previousShelf) {
+            if(previousShelf !== "none") {
               updatedBooks[previousShelf] = updatedBooks[previousShelf].filter((b) => b.id !== updatedBook.id)
             }
 
@@ -87,7 +87,7 @@ class BooksApp extends Component {
           const updatedBooks = {...this.state.books}
 
           //remove from original shelf
-          if(previousShelf) {
+          if(previousShelf !== "none") {
             updatedBooks[previousShelf] = updatedBooks[previousShelf].filter((b) => b.id !== currentBook.id)
           }
 
