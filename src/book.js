@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import escapeRegExp from 'escape-string-regexp'
-import sortBy from 'sort-by'
 
 class Book extends Component {
   static PropTypes = {
     book: PropTypes.object.isRequired,
-    moveTo: PropTypes.func.isRequired
+    moveTo: PropTypes.func.isRequired,
   }
 
   state = {
-    value: this.props.book.shelf
+    value: this.props.book.shelf ? this.props.book.shelf : ''
   }
 
   moveTo = (e) => {
@@ -45,9 +43,11 @@ class Book extends Component {
             </div>
           </div>
           <div className="book-title">{book.title}</div>
-          <div className="book-authors">{book.authors.map((author) => (
-            <span key={author}>{author} </span>
-          ))}</div>
+          {book.authors && (
+            <div className="book-authors">{book.authors.map((author) => (
+              <span key={author}>{author} </span>
+            ))}</div>
+          )}
         </div>
       </li>
     )

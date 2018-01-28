@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import escapeRegExp from 'escape-string-regexp'
-import sortBy from 'sort-by'
-import Book from './book'
+import Book from './Book'
 
 class Shelf extends Component {
   static PropTypes = {
@@ -14,8 +12,6 @@ class Shelf extends Component {
   render() {
     const { books } = this.props
     const { onMoveBook } = this.props
-
-    let booksList = books
 
     const booksCurrentlyReading = books.filter(book => book.shelf === "currentlyReading")
     const booksWantToRead = books.filter(book => book.shelf === "wantToRead")

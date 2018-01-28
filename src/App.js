@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
-import Shelf from './shelf.js'
-import Search from './search.js'
+import Shelf from './Shelf.js'
+import Search from './Search.js'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 
 class BooksApp extends Component {
   state = {
-    books: []
+    books: [],
+    searchResult: []
   }
 
   componentDidMount() {
@@ -27,8 +28,18 @@ class BooksApp extends Component {
         }
       })
     })
+    // 
+    // this.setState((state) => {
+    //   books: state.books.concat([book])
+    // })
 
     BooksAPI.update(book, shelf)
+  }
+
+  searchBooks = (query) => {
+    BooksAPI.search(query).then((searchResult) => {
+      this.setState({ searchResult })
+    })
   }
 
   render() {
@@ -41,7 +52,10 @@ class BooksApp extends Component {
           />
         )}/>
         <Route exact path="/search" render={({ history }) => (
-          <Search />
+          <Search
+            searchResult={this.state.searchResult}
+            searchBooks={this.searchBooks}
+          />
         )}/>
       </div>
     )
