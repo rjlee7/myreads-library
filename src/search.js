@@ -21,7 +21,9 @@ class Search extends Component {
 
   updateQuery = (query) => {
         this.setState({ query: query.trim() })
-        this.searchBooks(this.state.query)
+        if(query) {
+          this.searchBooks(this.state.query)
+        }
   }
 
   render() {
@@ -34,26 +36,25 @@ class Search extends Component {
         <div className="search-books-bar">
           <Link className="close-search" to="/">Close</Link>
           <div className="search-books-input-wrapper">
-
             <input
               type="text"
               placeholder="Search by title or author"
               value={query}
-              onChange={(event) => _.debounce(this.updateQuery(event.target.value),500)}
+              onChange={(event) => _.debounce(this.updateQuery(event.target.value),300)}
             />
-
           </div>
         </div>
         <div className="search-books-results">
-          {searchResult &&
-          (<ol className="books-grid">
-            {searchResult.map((book) => (
-              <Book key={book.id} book={book} addBook={addBook}/>
-            ))}
-          </ol>)}
-          {!searchResult && (
+          <ol className="books-grid">
+            {(searchResult && searchResult.length > 0) && (
+              searchResult.map((book) => (
+                <Book key={book.id} book={book} addBook={addBook}/>
+              ))
+            )}
+          </ol>
+          {(!searchResult || (searchResult && searchResult.error)) &&
             <div>No results</div>
-          )}
+          }
         </div>
       </div>
     )

@@ -10,7 +10,7 @@ class Book extends Component {
   }
 
   state = {
-    value: this.props.book.shelf ? this.props.book.shelf : 'none'
+    value: this.props.book.shelf ? this.props.book.shelf : ''
   }
 
   moveTo = (e) => {
@@ -38,12 +38,11 @@ class Book extends Component {
         <div className="book">
           <div className="book-top">
             {book.imageLinks && (
-              <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
-            )
-            }
+                <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
+            )}
             <div className="book-shelf-changer">
               <select onChange={this.moveTo} value={value}>
-                <option value="none" disabled>Move to...</option>
+                <option value="" disabled>Move to...</option>
                 <option value="currentlyReading">Currently Reading</option>
                 <option value="wantToRead">Want to Read</option>
                 <option value="read">Read</option>

@@ -27,9 +27,11 @@ class Library extends Component {
               <h2 className="bookshelf-title">Currently Reading</h2>
               <div className="bookshelf-books">
                 <ol className="books-grid">
-                  {currentlyReading.length && currentlyReading.map((book) => (
-                    <Book key={book.id} book={book} moveBook={moveBook}/>
-                  ))}
+                  {currentlyReading.length && (
+                    currentlyReading.map((book) => (
+                      <Book key={book.id} book={book} moveBook={moveBook}/>
+                    ))
+                  )}
                 </ol>
               </div>
             </div>
@@ -37,9 +39,11 @@ class Library extends Component {
               <h2 className="bookshelf-title">Want to Read</h2>
               <div className="bookshelf-books">
                 <ol className="books-grid">
-                  {wantToRead.length && wantToRead.map((book) => (
-                    <Book key={book.id} book={book} moveBook={moveBook}/>
-                  ))}
+                  {wantToRead.length && (
+                    wantToRead.map((book) => (
+                      <Book key={book.id} book={book} moveBook={moveBook}/>
+                    ))
+                  )}
                 </ol>
               </div>
             </div>
@@ -47,9 +51,11 @@ class Library extends Component {
               <h2 className="bookshelf-title">Read</h2>
               <div className="bookshelf-books">
                 <ol className="books-grid">
-                  {read.length && read.map((book) => (
-                    <Book key={book.id} book={book} moveBook={moveBook}/>
-                  ))}
+                  {read.length && (
+                    read.map((book) => (
+                      <Book key={book.id} book={book} moveBook={moveBook}/>
+                    ))
+                  )}
                 </ol>
               </div>
             </div>

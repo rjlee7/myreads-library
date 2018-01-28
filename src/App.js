@@ -37,48 +37,70 @@ class BooksApp extends Component {
   }
 
   moveBookToAnotherShelf = (book, shelf) => {
+    const previousShelf = book.shelf
+
+    //if same shelf do nothing
+    if(previousShelf === shelf) return;
+
     BooksAPI
       .update(book, shelf)
       .then(booksByShelf => {
+
         BooksAPI
           .get(book.id)
-          .then(result => {
+          .then(updatedBook => {
 
-            const newShelf = result.shelf
-            const previousShelf = book.shelf
+            const newShelf = updatedBook.shelf
             const updatedBooks = {...this.state.books}
 
+            //remove from original shelf
             if(previousShelf) {
-              //remove from original shelf
-              updatedBooks[previousShelf] = updatedBooks[previousShelf].filter((b) => b.id !== result.id)
+              updatedBooks[previousShelf] = updatedBooks[previousShelf].filter((b) => b.id !== updatedBook.id)
             }
+
+            //add to new shelf
             if(newShelf !== "none") {
-              //add to new shelf
-              updatedBooks[newShelf] = updatedBooks[newShelf].concat([result])
+              updatedBooks[newShelf] = updatedBooks[newShelf].concat([updatedBook])
             }
             this.setState({books: updatedBooks})
+
           })
+
       })
   }
 
   addBookToLibrary = (book, shelf) => {
-    BooksAPI
-      .update(book, shelf)
-      .then(booksByShelf => {
-            BooksAPI
-              .get(book.id)
-              .then(result => {
-                const newShelf = result.shelf
 
-                if(newShelf) {
-                  const updatedBooks = {...this.state.books}
-                  //add to new shelf
-                  updatedBooks[newShelf] = updatedBooks[newShelf].concat([result])
-                  this.setState({books:updatedBooks})
-                }
-              })
+    BooksAPI
+    .get(book.id)
+    .then(currentBook => {
+      //if moving to the same shelf do nothing
+      //if different shelf move
+      const previousShelf = currentBook.shelf
+      if(previousShelf === shelf) return;
+
+      BooksAPI
+      .update(currentBook, shelf)
+      .then(booksByShelf => {
+
+          const newShelf = shelf
+          const updatedBooks = {...this.state.books}
+
+          //remove from original shelf
+          if(previousShelf) {
+            updatedBooks[previousShelf] = updatedBooks[previousShelf].filter((b) => b.id !== currentBook.id)
+          }
+
+          //add to new shelf
+          if(newShelf !== "none") {
+            updatedBooks[newShelf] = updatedBooks[newShelf].concat([currentBook])
+            this.setState({books:updatedBooks})
+          }
 
       })
+    })
+
+
   }
 
   render() {
