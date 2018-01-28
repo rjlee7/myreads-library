@@ -11,6 +11,11 @@ class BooksApp extends Component {
       currentlyReading: [],
       wantToRead: [],
       read: []
+    },
+    shelves: {
+      currentlyReading: "Currently Reading",
+      wantToRead: "Want To Read",
+      read: "Read"
     }
   }
 
@@ -48,7 +53,6 @@ class BooksApp extends Component {
     if(newShelf !== "none") {
       booksList[newShelf] = booksList[newShelf].concat([compareBook])
     }
-    this.setState({books: booksList})
 
   }
 
@@ -70,6 +74,7 @@ class BooksApp extends Component {
 
             const newShelf = updatedBook.shelf
             this.move(updatedBook, booksList, previousShelf, newShelf)
+            this.setState({books: booksList})
 
           })
 
@@ -81,22 +86,25 @@ class BooksApp extends Component {
     const booksList = {...this.state.books}
 
     BooksAPI
-    .get(book.id)
-    .then(currentBook => {
-      const previousShelf = currentBook.shelf
+      .get(book.id)
+      .then(currentBook => {
+        const previousShelf = currentBook.shelf
 
-      //if same shelf do nothing
-      if(previousShelf === shelf) return;
+        //if same shelf do nothing
+        if(previousShelf === shelf) return;
 
-      BooksAPI
-      .update(currentBook, shelf)
-      .then(booksByShelf => {
+        BooksAPI
+        .update(currentBook, shelf)
+        .then(booksByShelf => {
+            const newShelf = shelf
 
-          const newShelf = shelf
-          this.move(currentBook, booksList, previousShelf, newShelf)
+            //set new shelf
+            currentBook.shelf = newShelf;
+            this.move(currentBook, booksList, previousShelf, newShelf)
+            this.setState({books: booksList})
 
+        })
       })
-    })
 
   }
 
@@ -107,6 +115,7 @@ class BooksApp extends Component {
           <Library
             books={this.state.books}
             moveBook={this.moveBookToAnotherShelf}
+            bookShelfTitles={this.state.shelves}
           />
         )}/>
         <Route exact path="/search" render={({ history }) => (

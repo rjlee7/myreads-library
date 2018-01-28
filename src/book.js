@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 class Book extends Component {
@@ -10,27 +9,31 @@ class Book extends Component {
   }
 
   state = {
-    value: this.props.book.shelf ? this.props.book.shelf : ''
+    value: this.props.book.shelf ? this.props.book.shelf : "none"
+  }
+
+  updateValue = (value) => {
+    this.setState({ value })
   }
 
   moveTo = (e) => {
     const shelf = e.target.value
     const book = this.props.book
 
-    this.setState({value:shelf})
-
     if (this.props.moveBook) {
+      this.updateValue(shelf)
       this.props.moveBook(book, shelf)
     }
 
     if (this.props.addBook) {
+      this.updateValue(shelf)
       this.props.addBook(book, shelf)
     }
+
   }
 
   render() {
     const { book } = this.props
-    const { moveBook } = this.props
     const { value } = this.state
 
     return (
@@ -42,7 +45,7 @@ class Book extends Component {
             )}
             <div className="book-shelf-changer">
               <select onChange={this.moveTo} value={value}>
-                <option value="" disabled>Move to...</option>
+                <option value="none" disabled>Move to...</option>
                 <option value="currentlyReading">Currently Reading</option>
                 <option value="wantToRead">Want to Read</option>
                 <option value="read">Read</option>
