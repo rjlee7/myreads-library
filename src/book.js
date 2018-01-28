@@ -5,33 +5,42 @@ import PropTypes from 'prop-types'
 class Book extends Component {
   static PropTypes = {
     book: PropTypes.object.isRequired,
-    moveTo: PropTypes.func.isRequired,
+    moveBook: PropTypes.func.isRequired,
+    addBook: PropTypes.func.isRequired
   }
 
   state = {
-    value: this.props.book.shelf ? this.props.book.shelf : ''
+    value: this.props.book.shelf ? this.props.book.shelf : 'none'
   }
 
   moveTo = (e) => {
-    e.preventDefault()
     const shelf = e.target.value
     const book = this.props.book
-    console.log('shelf',shelf)
-    console.log('book',book)
-    if (this.props.onMoveBook)
-      this.props.onMoveBook(book, shelf)
+
+    this.setState({value:shelf})
+
+    if (this.props.moveBook) {
+      this.props.moveBook(book, shelf)
+    }
+
+    if (this.props.addBook) {
+      this.props.addBook(book, shelf)
+    }
   }
 
   render() {
     const { book } = this.props
-    const { onMoveBook } = this.props
+    const { moveBook } = this.props
     const { value } = this.state
 
     return (
       <li key={book.id}>
         <div className="book">
           <div className="book-top">
-            <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
+            {book.imageLinks && (
+              <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
+            )
+            }
             <div className="book-shelf-changer">
               <select onChange={this.moveTo} value={value}>
                 <option value="none" disabled>Move to...</option>

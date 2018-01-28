@@ -1,31 +1,34 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import PropTypes from 'prop-types'
 import Book from './Book'
+import * as BooksAPI from './BooksAPI'
 import _ from 'underscore'
 
 class Search extends Component {
-  static PropTypes = {
-    searchResult: PropTypes.array.isRequired,
-    searchBooks: PropTypes.func.isRequired
-  }
 
   state = {
-    query: ''
+    query: '',
+    searchResult: []
+  }
+
+  searchBooks = (query) => {
+    BooksAPI
+      .search(query)
+      .then((searchResult) => {
+        this.setState({ searchResult })
+      })
   }
 
   updateQuery = (query) => {
-    this.setState({ query: query.trim() })
-    this.props.searchBooks(this.state.query)
+        this.setState({ query: query.trim() })
+        this.searchBooks(this.state.query)
   }
 
   render() {
     const { query } = this.state
-    const { searchResult } = this.props
-    const { searchBooks } = this.props
-    const { moveBook } = this.props
+    const { searchResult } = this.state
+    const { addBook } = this.props
 
-    console.log('searchResult',searchResult)
     return (
       <div className="search-books">
         <div className="search-books-bar">
@@ -36,7 +39,7 @@ class Search extends Component {
               type="text"
               placeholder="Search by title or author"
               value={query}
-              onChange={(event) => _.debounce(this.updateQuery(event.target.value),300)}
+              onChange={(event) => _.debounce(this.updateQuery(event.target.value),500)}
             />
 
           </div>
@@ -45,7 +48,7 @@ class Search extends Component {
           {searchResult &&
           (<ol className="books-grid">
             {searchResult.map((book) => (
-              <Book key={book.id} book={book} moveBook={moveBook}/>
+              <Book key={book.id} book={book} addBook={addBook}/>
             ))}
           </ol>)}
           {!searchResult && (
