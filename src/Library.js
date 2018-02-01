@@ -7,13 +7,21 @@ class Library extends Component {
   static PropTypes = {
     books: PropTypes.array.isRequired,
     moveBook: PropTypes.func.isRequired,
-    bookShelfTitles: PropTypes.object.isRequired
+    bookShelfTitles: PropTypes.object.isRequired,
+    getBookShelf: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired
+  }
+
+  state = {
+    loading: true
   }
 
   render() {
     const { books } = this.props
     const { moveBook } = this.props
     const { bookShelfTitles } = this.props
+    const { getBookShelf } = this.props
+    const { loading } = this.props
 
     return (
       <div className="list-books">
@@ -29,6 +37,8 @@ class Library extends Component {
                   bookShelfTitle={bookShelfTitles[shelfType]}
                   booksOnShelf={books[shelfType]}
                   moveBook={moveBook}
+                  getBookShelf={getBookShelf}
+                  loading={loading}
                 />
               )
             })}

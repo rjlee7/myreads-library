@@ -172,3 +172,12 @@ body, .app {
   text-align: center;
   font-size: 0.8em;
 }
+
+/* loader */
+
+.loader {
+  background-image: url('./icons/loader.gif');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100px;
+}

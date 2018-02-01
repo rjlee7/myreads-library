@@ -8,21 +8,25 @@ class Search extends Component {
 
   state = {
     query: '',
-    searchResult: []
+    searchResult: [],
+    loading: false
   }
 
   searchBooks = (query) => {
     BooksAPI
       .search(query)
       .then((searchResult) => {
-        this.setState({ searchResult })
+        this.setState({
+          searchResult: searchResult,
+          loading: true
+        })
       })
   }
 
   updateQuery = (query) => {
         this.setState({ query: query.trim() })
         if(query) {
-          this.searchBooks(this.state.query)
+          this.searchBooks(query)
         }
   }
 
@@ -30,7 +34,8 @@ class Search extends Component {
     const { query } = this.state
     const { searchResult } = this.state
     const { addBook } = this.props
-
+    const { getBookShelf } = this.props
+    const { loading } = this.props
     return (
       <div className="search-books">
         <div className="search-books-bar">
@@ -46,10 +51,12 @@ class Search extends Component {
         </div>
         <div className="search-books-results">
           <ol className="books-grid">
-            {(searchResult && searchResult.length > 0) && (
-              searchResult.map((book) => (
-                <Book key={book.id} book={book} addBook={addBook}/>
-              ))
+            {loading ? <div className="loader" style={{ width: 100, height: 100}}></div> : (
+              (searchResult && searchResult.length > 0) && (
+                searchResult.map((book) => (
+                  <Book key={book.id} book={book} addBook={addBook} getBookShelf={getBookShelf}/>
+                ))
+              )
             )}
           </ol>
           {(!searchResult || (searchResult && searchResult.error)) &&

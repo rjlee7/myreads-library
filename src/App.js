@@ -16,7 +16,8 @@ class BooksApp extends Component {
       currentlyReading: "Currently Reading",
       wantToRead: "Want To Read",
       read: "Read"
-    }
+    },
+    loading: true
   }
 
   componentDidMount() {
@@ -30,6 +31,7 @@ class BooksApp extends Component {
         const read = allBooks.filter(book => book.shelf === "read")
 
         this.setState({
+          loading: false,
           books: {
             currentlyReading: currentlyReading,
             wantToRead: wantToRead,
@@ -41,11 +43,19 @@ class BooksApp extends Component {
 
   }
 
+  getBookShelf = (bookId) => {
+    return BooksAPI
+      .get(bookId)
+      .then(bookFound => {
+        return bookFound.shelf
+      })
+  }
+
   //utility method
   move = (compareBook, booksList, previousShelf, newShelf) => {
 
     //remove from original shelf
-    if(previousShelf !== "none") {
+    if(previousShelf && (previousShelf !== "none")) {
       booksList[previousShelf] = booksList[previousShelf].filter((b) => b.id !== compareBook.id)
     }
 
@@ -85,27 +95,22 @@ class BooksApp extends Component {
   addBookToLibrary = (book, shelf) => {
     const booksList = {...this.state.books}
 
-    BooksAPI
-      .get(book.id)
-      .then(currentBook => {
-        const previousShelf = currentBook.shelf
+        const previousShelf = book.shelf
 
         //if same shelf do nothing
         if(previousShelf === shelf) return;
 
         BooksAPI
-        .update(currentBook, shelf)
+        .update(book, shelf)
         .then(booksByShelf => {
             const newShelf = shelf
 
             //set new shelf
-            currentBook.shelf = newShelf;
-            this.move(currentBook, booksList, previousShelf, newShelf)
+            book.shelf = newShelf;
+            this.move(book, booksList, previousShelf, newShelf)
             this.setState({books: booksList})
 
         })
-      })
-
   }
 
   render() {
@@ -116,11 +121,14 @@ class BooksApp extends Component {
             books={this.state.books}
             moveBook={this.moveBookToAnotherShelf}
             bookShelfTitles={this.state.shelves}
+            getBookShelf={this.getBookShelf}
+            loading={this.state.loading}
           />
         )}/>
         <Route exact path="/search" render={({ history }) => (
           <Search
             addBook={this.addBookToLibrary}
+            getBookShelf={this.getBookShelf}
           />
         )}/>
       </div>
