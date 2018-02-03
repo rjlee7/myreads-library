@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import Book from './Book'
 import * as BooksAPI from './BooksAPI'
-import _ from 'underscore'
+import { DebounceInput } from 'react-debounce-input'
 
 class Search extends Component {
 
@@ -13,40 +13,51 @@ class Search extends Component {
   }
 
   searchBooks = (query) => {
+
     BooksAPI
       .search(query)
       .then((searchResult) => {
-        this.setState({
-          searchResult: searchResult,
-          loading: true
-        })
+        if(searchResult.length > 0) {
+          const updatedSearchResult = searchResult.map(book => {
+            return this.props.getBookShelf(book.id).then(res =>{
+              book.shelf = res
+              return book
+            })
+          })
+          return Promise.all(updatedSearchResult)
+            .then(books => {
+              this.setState({
+                searchResult: books,
+                loading: true
+              })
+            })
+        }
       })
   }
 
   updateQuery = (query) => {
-        this.setState({ query: query.trim() })
-        if(query) {
-          this.searchBooks(query)
-        }
+      if(query) {
+        this.searchBooks(query)
+      } else {
+        this.setState({ searchResult: [] })
+      }
   }
 
   render() {
-    const { query } = this.state
     const { searchResult } = this.state
     const { addBook } = this.props
-    const { getBookShelf } = this.props
     const { loading } = this.props
     return (
       <div className="search-books">
         <div className="search-books-bar">
           <Link className="close-search" to="/">Close</Link>
           <div className="search-books-input-wrapper">
-            <input
+            <DebounceInput
+              minLength={1}
+              debounceTimeout={300}
               type="text"
               placeholder="Search by title or author"
-              value={query}
-              onChange={(event) => _.debounce(this.updateQuery(event.target.value),300)}
-            />
+              onChange={event => this.updateQuery(event.target.value)} />
           </div>
         </div>
         <div className="search-books-results">
@@ -54,7 +65,7 @@ class Search extends Component {
             {loading ? <div className="loader" style={{ width: 100, height: 100}}></div> : (
               (searchResult && searchResult.length > 0) && (
                 searchResult.map((book) => (
-                  <Book key={book.id} book={book} addBook={addBook} getBookShelf={getBookShelf}/>
+                  <Book key={book.id} book={book} addBook={addBook}/>
                 ))
               )
             )}

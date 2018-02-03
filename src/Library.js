@@ -4,8 +4,8 @@ import PropTypes from 'prop-types'
 import BookShelf from './BookShelf'
 
 class Library extends Component {
-  static PropTypes = {
-    books: PropTypes.array.isRequired,
+  static propTypes = {
+    books: PropTypes.object.isRequired,
     moveBook: PropTypes.func.isRequired,
     bookShelfTitles: PropTypes.object.isRequired,
     getBookShelf: PropTypes.func.isRequired,

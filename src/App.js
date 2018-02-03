@@ -12,12 +12,13 @@ class BooksApp extends Component {
       wantToRead: [],
       read: []
     },
-    shelves: {
-      currentlyReading: "Currently Reading",
-      wantToRead: "Want To Read",
-      read: "Read"
-    },
     loading: true
+  }
+
+  shelves = {
+    currentlyReading: "Currently Reading",
+    wantToRead: "Want To Read",
+    read: "Read"
   }
 
   componentDidMount() {
@@ -120,7 +121,7 @@ class BooksApp extends Component {
           <Library
             books={this.state.books}
             moveBook={this.moveBookToAnotherShelf}
-            bookShelfTitles={this.state.shelves}
+            bookShelfTitles={this.shelves}
             getBookShelf={this.getBookShelf}
             loading={this.state.loading}
           />

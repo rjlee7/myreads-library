@@ -2,24 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 class Book extends Component {
-  static PropTypes = {
-    book: PropTypes.object.isRequired,
-    moveBook: PropTypes.func.isRequired,
-    addBook: PropTypes.func.isRequired,
-    getBookShelf: PropTypes.func.isRequired
+  static propTypes = {
+    book: PropTypes.object.isRequired
   }
 
   state = {
-    value: "none"
-  }
-
-  componentDidMount() {
-    //sometimes throws this error below...
-    //warning.js:33 Warning: setState(...): Can only update a mounted or mounting component. This usually means you called setState() on an unmounted component. This is a no-op. Please check the code for the Book component.
-    this.props.getBookShelf(this.props.book.id)
-      .then(res=>{
-        this.setState({value:res})
-      })
+    value: this.props.book.shelf
   }
 
   moveTo = (e) => {
@@ -47,7 +35,8 @@ class Book extends Component {
           <div className="book-top">
             {(book.imageLinks && book.imageLinks.smallThumbnail) ? (
                 <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
-            ) : null}
+            ) : <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(http://via.placeholder.com/128x193?text=No%20Cover)` }}></div>
+}
             <div className="book-shelf-changer">
               <select onChange={this.moveTo} value={value}>
                 <option value="none" disabled>Move to...</option>
@@ -59,11 +48,7 @@ class Book extends Component {
             </div>
           </div>
           <div className="book-title">{book.title}</div>
-          {(book.authors) ? (
-            <div className="book-authors">{book.authors.map((author) => (
-              <span key={author}>{author} </span>
-            ))}</div>
-          ) : null}
+            <div className="book-authors">{book.authors ? book.authors.join(', ') : ''}</div>
         </div>
       </li>
     )
